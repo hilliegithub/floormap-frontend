@@ -1,0 +1,74 @@
+<div class="content">
+    <h1>Create Floor Mapping</h1>
+    <h3>Start mapping a floor on your building here:</h3>
+    <form [formGroup]="floormapForm" (ngSubmit)="onSubmit($event)">
+        <label for="building">Enter the building name:</label>
+        <input id="building" type="text" formControlName="building" required>
+        <div *ngIf="floormapForm.controls.building.invalid && floormapForm.controls.building.errors &&
+         (floormapForm.controls.building.dirty || floormapForm.controls.building.touched)" class="alert alert-danger"
+            #alertbuilding>
+            Building Name is required. It should be also be Alphanumeric.
+        </div>
+
+        <label for="floor">Enter the floor:</label>
+        <input id="floor" type="text" formControlName="floor" required>
+        <div *ngIf="floormapForm.controls.floor.invalid &&  floormapForm.controls.floor.errors &&
+        (floormapForm.controls.floor.dirty || floormapForm.controls.floor.touched)" class="alert alert-danger"
+            #alertfloor>
+            The name of the floor is required. It should be also Alphanumeric.
+        </div>
+
+        <label for="email">Enter your email:</label>
+        <input id="email" type="email" formControlName="email" required>
+        <div *ngIf="floormapForm.controls.email.invalid && floormapForm.controls.email.errors &&
+        (floormapForm.controls.email.dirty || floormapForm.controls.email.touched)" class="alert alert-danger"
+            #alertemail>
+            A valid email address is required.
+        </div>
+
+        <label for="image">Upload floor image: (PNG, JPG)</label>
+        <input class="form-control" formControlName="image" (change)="onImgUpload($event)" type="file" name="image"
+            id="image" accept=".png, .jpg, .jpeg">
+        <div *ngIf="floormapForm.controls.image.invalid && floormapForm.controls.image.errors &&
+        (floormapForm.controls.image.dirty || floormapForm.controls.image.touched)" class="alert alert-danger"
+            #alertimage>
+            Image is required.
+        </div>
+
+        <button type="submit" [disabled]="floormapForm.invalid || floormapForm.pristine">Submit</button>
+    </form>
+    <!--<form>
+        <div class="form-group">
+            <label for="building">Enter the building name: </label>
+            <input class="form-control" type="text" pattern="^[a-zA-Z0-9]+$" placeholder="Headquarters" name="building"
+                id="building" required />
+            <div [hidden]="true" class="alert alert-danger">
+                Building Name is required. It should be also be Alphanumeric.
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="floor">Enter the floor: </label>
+            <input class="form-control" type="text" pattern="^[a-zA-Z0-9]+$" placeholder="ninth" name="floor" id="floor"
+                required />
+            <div class="alert alert-danger">
+                The name of the floor is required. It should be also Alphanumeric.
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email">Enter your email address: </label>
+            <input class="form-control" type="email" placeholder="youremail@gmail.com" name="email" id="email"
+                required />
+            <div class="alert alert-danger">
+                A valid email address is required.
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="image">Upload floor image: (PNG, JPG)</label>
+            <input class="form-control" id="image" type="file" name="image" id="image" accept=".png, .jpg, .jpeg"
+                required />
+            <div class="alert alert-danger">
+                Image is required.
+            </div>
+        </div>
+    </form>-->
+</div>
