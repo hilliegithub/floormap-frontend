@@ -1,7 +1,7 @@
-import { Component, ElementRef, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FloorMap } from '../floormap';
+import { Router } from '@angular/router';
 import { JsonPipe, NgIf } from '@angular/common';
 import { BackendserviceService } from '../services/backendservice.service';
 
@@ -12,7 +12,7 @@ import { BackendserviceService } from '../services/backendservice.service';
   templateUrl: './floor-map.component.html',
   styleUrl: './floor-map.component.css'
 })
-export class FloorMapComponent {
+export class FloorMapComponent implements OnInit {
   private backendService: BackendserviceService = inject(BackendserviceService);
   private FloorImageId: string = '';
 
@@ -27,10 +27,14 @@ export class FloorMapComponent {
   alertbuilding!: ElementRef;
 
   // Inject service into constructor3
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private router: Router) {
   }
 
   onImgUpload(event: Event){
+  }
+
+  ngOnInit(): void {
+      //this.imageObservable$ = this.route.paramMap.pipe("");
   }
 
   onSubmit(event: Event){
@@ -50,5 +54,7 @@ export class FloorMapComponent {
     }
     this.FloorImageId = this.backendService.sendCreateFloorMap(formdata);
     console.log(this.FloorImageId);
+    //this.router.navigate(['floor-map-selected', this.FloorImageId])
+    this.router.navigate(['/floor-map-select', this.FloorImageId])
   }
 }
