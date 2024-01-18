@@ -1,1 +1,5 @@
-<div [style.width.px]="properties.xsize" [style.transform]="style">ITEM</div>
+<!--<div [style.width.px]="properties.xsize">{{properties.name}}</div>-->
+<div class="seat-box" cdkDragBoundary=".ws1" cdkDrag [style.width]="properties.width"
+    [cdkDragFreeDragPosition]="dragPosition" [style]="properties.heigth">
+    This Seat
+</div>

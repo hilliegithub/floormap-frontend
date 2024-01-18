@@ -1,9 +1,9 @@
 <div class="container">
-    <div class="workspace" (mousedown)="dragStart($event)" (mouseup)="dragEnd($event)" (mousemove)="drag($event)">
+    <div class="workspace">
         <h1>Select seats for building</h1>
-        <div class="ws1" #dragitem>
+        <div class="ws1">
             <img src="../../assets/floorplan.png">
-            <app-seat #currentSeat></app-seat>
+            <app-seat></app-seat>
         </div>
 
     </div>

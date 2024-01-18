@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { ActivatedRoute } from '@angular/router';
 import { SeatConfig } from '../seatconfig';
@@ -12,9 +12,11 @@ import { SeatComponent } from '../seat/seat.component';
   templateUrl: './floor-map-select.component.html',
   styleUrl: './floor-map-select.component.css'
 })
-export class FloorMapSelectComponent implements OnInit, OnChanges {
-  @ViewChild('dragitem')
-  dragitem!: ElementRef;
+export class FloorMapSelectComponent implements OnInit {
+  @ViewChild('dragspace')
+  dragspace!: ElementRef;
+
+  draggableEl!: HTMLElement | null;
 
   @ViewChild(SeatComponent) currentSeat!: SeatComponent;
 
@@ -26,14 +28,6 @@ export class FloorMapSelectComponent implements OnInit, OnChanges {
      seats: new Array<Seat>()
     }
 
-    private currentX = 0;
-    private currentY = 0;
-    private initialX = 0;
-    private initialY = 0;
-    private xOffset = 0;
-    private yOffset = 0;
-    private active = false;
-
     constructor(private route: ActivatedRoute){
     }
 
@@ -44,56 +38,4 @@ export class FloorMapSelectComponent implements OnInit, OnChanges {
           this.floormappingname = id;
         });
     }
-
-    ngOnChanges(changes: SimpleChanges): void {
-      console.log(changes);
-    }
-
-    dragStart(event: any): void{
-      console.log(event.type);
-      if(event.type === 'mousedown'){
-      var l = event.target as HTMLElement;
-      var r = (this.dragitem.nativeElement as HTMLElement).querySelector('div');
-
-      this.initialX = event.clientX;
-            this.initialY = event.clientY;
-            if(l === r){
-              this.active = true;
-              console.log(this.active);
-            }
-          }
-    }
-
-    dragEnd(event: any): void{
-      console.log(event.type);
-      if(event.type === 'mouseup'){
-        this.initialX = this.currentX;
-        this.initialY = this.currentY;
-        this.active = false;
-        console.log(this.active);
-      }
-    }
-
-    drag(event: any):void{
-      console.log(event.type);
-
-        if(event.type === 'mousemove'){
-
-          if(this.active){
-            // event.prenventDefault();
-
-            this.currentX = event.clientX - this.initialX;
-            this.currentY = event.clientY - this.initialY;
-
-            this.xOffset = this.currentX;
-            this.yOffset = this.currentY;
-            console.log("x:" + this.currentX + " y:" + this.currentY);
-            this.currentSeat.setX(this.currentX);
-            this.currentSeat.setY(this.currentY);
-            this.currentSeat.setTranslate();
-          }
-
-        }
-      }
-
 }
