@@ -60,6 +60,7 @@ export class FloorMapSelectComponent implements OnInit, AfterViewInit {
       // Calculate the relative position
       for(var ind = 0; ind < list.length; ind++){
         const newSeat: Seat = {
+          name: list[ind]?.querySelector('input')?.value,
           relativeBottom: (list[ind]!.getBoundingClientRect().bottom - this.floormapboundary.nativeElement.getBoundingClientRect().bottom),
           relativeLeft: (list[ind]!.getBoundingClientRect().left - this.floormapboundary.nativeElement.getBoundingClientRect().left),
           relativeRight: (list[ind]!.getBoundingClientRect().right - this.floormapboundary.nativeElement.getBoundingClientRect().right),
@@ -67,6 +68,8 @@ export class FloorMapSelectComponent implements OnInit, AfterViewInit {
         }
         seats.push(newSeat);
       }
+      console.log(this.floormapboundary.nativeElement.getBoundingClientRect());
+
       console.log(seats);
     }
 }
