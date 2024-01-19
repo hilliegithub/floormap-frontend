@@ -1,5 +1,6 @@
 <!--<div [style.width.px]="properties.xsize">{{properties.name}}</div>-->
-<div class="seat-box" cdkDragBoundary=".ws1" cdkDrag [style.width]="properties.width"
-    [cdkDragFreeDragPosition]="dragPosition" [style]="properties.heigth">
+<div class="seat-box" cdkDragBoundary=".ws1" cdkDrag [style.width]="'50px'"
+    [cdkDragFreeDragPosition]="{x: 500, y: -500}" [style.heigth]="'50px'">
+    <!--<input type="text" placeholder="This Seat">-->
     This Seat
 </div>

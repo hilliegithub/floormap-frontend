@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Seat } from '../seat';
 import {CdkDrag} from '@angular/cdk/drag-drop';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-seat',
@@ -10,12 +10,8 @@ import {CdkDrag} from '@angular/cdk/drag-drop';
   styleUrl: './seat.component.css'
 })
 export class SeatComponent {
-  public properties: Seat = {
-    xsize: 50,
-    width: '50px',
-    heigth: '50px',
-    ysize: 50
-  }
+
+  @Output() seatname = new EventEmitter<string>();
 
   dragPosition = {x: 500, y: -500};
 

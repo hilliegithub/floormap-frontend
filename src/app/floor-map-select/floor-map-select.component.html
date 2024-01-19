@@ -1,13 +1,18 @@
 <div class="container">
     <div class="workspace">
         <h1>Select seats for building</h1>
-        <div class="ws1">
+        <div class="ws1" #floormapboundary>
             <img src="../../assets/floorplan.png">
-            <app-seat></app-seat>
+            <!--<app-seat></app-seat>-->
+            @for (seat of seatArray; track $index) {
+                <app-seat></app-seat>
+            }
         </div>
 
     </div>
     <div class="sidepanel">
         Side panel
+        <button (click)="addSeat()">Add Seat</button>
+        <button (click)="createMap()">Create Map</button>
     </div>
 </div>

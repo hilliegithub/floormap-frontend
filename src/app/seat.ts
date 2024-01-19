@@ -1,9 +1,6 @@
-export interface Seat{
-   name?: string;
-   xplot?: number;
-   yplot?: number;
-   xsize: number;
-   width: string;
-   ysize: number;
-   heigth: string;
+export interface Seat {
+  relativeTop?: number;
+  relativeBottom?: number;
+  relativeLeft?: number;
+  relativeRight?: number;
 }
