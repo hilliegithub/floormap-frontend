@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -5,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class BackendserviceService {
 
-  constructor() { }
+  constructor(private http:HttpClient) { }
 
   sendCreateFloorMap(floormapBasic: FormData): string{
     console.log(floormapBasic);
@@ -15,6 +16,21 @@ export class BackendserviceService {
     // }
 
     // SEND HTTP REQUEST WITH
+
+    const headers = new HttpHeaders().set("Content-Type", "multipart/form-data")
+
+    this.http.post("http://localhost:8080/upload", floormapBasic, {headers})
+    .subscribe(
+      (val) => {
+        console.log("POST call successfull value returned. ", val);
+      },
+      response => {
+        console.log("POST call had a error", response);
+      },
+      () => {
+        console.log("The POST observable is now completed.");
+      }
+    );
 
     return 'headquarters_ninth_floor_20240115';
   }

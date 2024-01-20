@@ -54,7 +54,7 @@ export class FloorMapComponent implements OnInit {
     }
     this.FloorImageId = this.backendService.sendCreateFloorMap(formdata);
     console.log(this.FloorImageId);
-    //this.router.navigate(['floor-map-selected', this.FloorImageId])
-    this.router.navigate(['/floor-map-select', this.FloorImageId])
+
+    //this.router.navigate(['/floor-map-select', this.FloorImageId])
   }
 }
