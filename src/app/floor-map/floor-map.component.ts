@@ -52,9 +52,18 @@ export class FloorMapComponent implements OnInit {
     if(obj.files){
       formdata.append("image",obj.files[0])
     }
-    this.FloorImageId = this.backendService.sendCreateFloorMap(formdata);
-    console.log(this.FloorImageId);
-
-    //this.router.navigate(['/floor-map-select', this.FloorImageId])
+    // this.FloorImageId = this.backendService.sendCreateFloorMap(formdata);
+    var responseObservable = this.backendService.sendCreateFloorMap(formdata);
+    responseObservable.subscribe(
+      (val) => {
+        console.log("POST call successfull value returned. ", val);
+        this.FloorImageId = val.imagename;
+        console.log(this.FloorImageId);
+        // this.router.navigate(['/floor-map-select', this.FloorImageId])
+      },
+      err => {
+        console.log("POST call had a error", err);
+      }
+    );
   }
 }
