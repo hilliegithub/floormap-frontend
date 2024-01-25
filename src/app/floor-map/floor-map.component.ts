@@ -59,7 +59,7 @@ export class FloorMapComponent implements OnInit {
         console.log("POST call successfull value returned. ", val);
         this.FloorImageId = val.imagename;
         console.log(this.FloorImageId);
-        // this.router.navigate(['/floor-map-select', this.FloorImageId])
+        this.router.navigate(['/floor-map-select', this.FloorImageId])
       },
       err => {
         console.log("POST call had a error", err);

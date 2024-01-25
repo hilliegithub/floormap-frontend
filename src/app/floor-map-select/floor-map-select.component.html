@@ -1,8 +1,9 @@
-<div class="container">
+<div class="container" *ngIf="validUrlParam">
     <div class="workspace">
         <h1>Select seats for building</h1>
         <div class="ws1" #floormapboundary>
-            <img src="../../assets/floorplan.png">
+            <img [src]="imgURL">
+            <!-- <img id="map" src=""> -->
             <!--<app-seat></app-seat>-->
             @for (seat of seatArray; track $index) {
                 <app-seat></app-seat>
@@ -17,4 +18,7 @@
             <button (click)="createMap()">Create Map</button>
         </div>
     </div>
+</div>
+<div class="container" *ngIf="!validUrlParam">
+    Not a valid request.
 </div>

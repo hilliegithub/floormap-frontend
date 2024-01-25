@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -15,5 +15,14 @@ export class BackendserviceService {
     //console.log(floormapBasic);
 
     return this.http.post("http://localhost:8080/upload", floormapBasic)
+  }
+
+  getFloorMapImg(imagename: string): Observable<any>{
+    // const params = new HttpParams({fromString: imagename})
+    return this.http.request('GET',"http://localhost:8080/getimage" + '?img=' + imagename, {responseType:'json'});
+  }
+
+  createMap(jsonData: any): Observable<any>{
+    return this.http.request('POST',"http://localhost:8080/createmap", {body: jsonData, headers: {"Content-Type" : "application/json"}})
   }
 }

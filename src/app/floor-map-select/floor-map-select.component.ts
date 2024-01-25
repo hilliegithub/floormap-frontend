@@ -1,21 +1,27 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
-
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SeatConfig } from '../seatconfig';
 import { Seat } from '../seat';
 import { SeatComponent } from '../seat/seat.component';
+import { CommonModule } from '@angular/common';
+import { BackendserviceService } from '../services/backendservice.service';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { environment } from '../../environments/environment.development';
+import { NodeJsClient } from '@smithy/types';
 
 @Component({
   selector: 'app-floor-map-select',
   standalone: true,
-  imports: [SeatComponent],
+  imports: [SeatComponent, CommonModule],
   templateUrl: './floor-map-select.component.html',
   styleUrl: './floor-map-select.component.css'
 })
-export class FloorMapSelectComponent implements OnInit, AfterViewInit {
+export class FloorMapSelectComponent implements OnInit {
 
     @ViewChild('floormapboundary') floormapboundary!: ElementRef;
     seatArray: Array<SeatComponent> = [];
+    private backendService: BackendserviceService = inject(BackendserviceService);
 
     private floormappingname: string = '';
     private seatConfiguration: SeatConfig = {
@@ -23,12 +29,12 @@ export class FloorMapSelectComponent implements OnInit, AfterViewInit {
      heigthConfigured: 0
     }
 
+    validUrlParam = false;
+    imgURL = '';
+    s3Client = new S3Client({region: environment.awsRegion, credentials: {accessKeyId:environment.s3Credentials.accessKeyId,secretAccessKey:environment.s3Credentials.secretAccessKey}}) as NodeJsClient<S3Client>;
+
     constructor(private route: ActivatedRoute){
     }
-
-  ngAfterViewInit(): void {
-
-  }
 
     ngOnInit(): void {
         this.route.params.subscribe(params => {
@@ -36,7 +42,38 @@ export class FloorMapSelectComponent implements OnInit, AfterViewInit {
           console.log(id);
           this.floormappingname = id;
         });
-        this.seatArray.push(new SeatComponent);
+        if(this.containsAlphanumeric(this.floormappingname)){
+
+          var responseObservable = this.backendService.getFloorMapImg(this.floormappingname)
+          responseObservable.subscribe(
+            async (res) => {
+              console.log(res);
+              var key = 'floor-images/' + res.imageKey[0];
+              console.log(key);
+              var params = {Bucket: 'floor-mapping', Key: key};
+              var command = new GetObjectCommand(params);
+              //ar urlPresigned = await (getSignedUrl(this.s3Client, command, {expiresIn: 3600}));
+              //console.log(await urlPresigned)
+
+              //this.imgURL = urlPresigned;
+              this.imgURL = "../../assets/floorplan.png"
+            },
+            (err) => {
+              console.error(err)
+            }
+          );
+
+          this.seatArray.push(new SeatComponent);
+          this.validUrlParam = true
+        }
+        else{
+          // Throw error up on page
+        }
+    }
+
+    containsAlphanumeric(str: string){
+      var alphanumericRegex = /^[a-zA-Z0-9_]+$/;
+      return alphanumericRegex.test(str);
     }
 
     addSeat(){
@@ -44,9 +81,6 @@ export class FloorMapSelectComponent implements OnInit, AfterViewInit {
     }
 
     createMap(){
-      // console.log(this.floormapboundary.nativeElement.getBoundingClientRect());
-      // console.log(this.floormapboundary.nativeElement.getBoundingClientRect().width);
-      // console.log(this.floormapboundary.nativeElement.getBoundingClientRect().height);
       var list = [];
       var l = document.getElementsByTagName('app-seat');
       for(var ind = 0; ind < l.length; ind++){
@@ -68,8 +102,31 @@ export class FloorMapSelectComponent implements OnInit, AfterViewInit {
         }
         seats.push(newSeat);
       }
-      console.log(this.floormapboundary.nativeElement.getBoundingClientRect());
+      //console.log(this.floormapboundary.nativeElement.getBoundingClientRect());
+      // console.log(seats);
 
-      console.log(seats);
+      var finalConfig = {
+        boundary: {
+          bottom: this.floormapboundary.nativeElement.getBoundingClientRect().bottom,
+          height: this.floormapboundary.nativeElement.getBoundingClientRect().height,
+          left: this.floormapboundary.nativeElement.getBoundingClientRect().left,
+          right: this.floormapboundary.nativeElement.getBoundingClientRect().right,
+          top: this.floormapboundary.nativeElement.getBoundingClientRect().top,
+          width: this.floormapboundary.nativeElement.getBoundingClientRect().width,
+        },
+        seats: seats
+      };
+
+      var json = JSON.stringify(finalConfig);
+      console.log(json);
+      var responseObservable = this.backendService.createMap(json);
+      responseObservable.subscribe(
+        (res) => {
+          console.log(res);
+        },
+        (err) => {
+          console.error(err);
+        }
+      )
     }
 }
