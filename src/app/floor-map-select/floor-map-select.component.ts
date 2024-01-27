@@ -29,7 +29,8 @@ export class FloorMapSelectComponent implements OnInit {
      heigthConfigured: 0
     }
 
-    validUrlParam = false;
+    validUrlParam = true;
+    imageAWSKey = '';
     imgURL = '';
     s3Client = new S3Client({region: environment.awsRegion, credentials: {accessKeyId:environment.s3Credentials.accessKeyId,secretAccessKey:environment.s3Credentials.secretAccessKey}}) as NodeJsClient<S3Client>;
 
@@ -48,15 +49,20 @@ export class FloorMapSelectComponent implements OnInit {
           responseObservable.subscribe(
             async (res) => {
               console.log(res);
-              var key = 'floor-images/' + res.imageKey[0];
-              console.log(key);
-              var params = {Bucket: 'floor-mapping', Key: key};
-              var command = new GetObjectCommand(params);
-              //ar urlPresigned = await (getSignedUrl(this.s3Client, command, {expiresIn: 3600}));
-              //console.log(await urlPresigned)
-
-              //this.imgURL = urlPresigned;
-              this.imgURL = "../../assets/floorplan.png"
+              if(res.error.status == 'true'){
+                this.validUrlParam = false;
+              }
+              else{
+                var key = 'floor-images/' + res.imageKey;
+                console.log(key);
+                var params = {Bucket: 'floor-mapping', Key: key};
+                var command = new GetObjectCommand(params);
+                //ar urlPresigned = await (getSignedUrl(this.s3Client, command, {expiresIn: 3600}));
+                //console.log(await urlPresigned)
+                //this.imgURL = urlPresigned;
+                this.imageAWSKey = key;
+                this.imgURL = "../../assets/floorplan.png"
+              }
             },
             (err) => {
               console.error(err)
@@ -64,7 +70,6 @@ export class FloorMapSelectComponent implements OnInit {
           );
 
           this.seatArray.push(new SeatComponent);
-          this.validUrlParam = true
         }
         else{
           // Throw error up on page
@@ -107,6 +112,7 @@ export class FloorMapSelectComponent implements OnInit {
 
       var finalConfig = {
         boundary: {
+          floormapname: this.floormappingname,
           bottom: this.floormapboundary.nativeElement.getBoundingClientRect().bottom,
           height: this.floormapboundary.nativeElement.getBoundingClientRect().height,
           left: this.floormapboundary.nativeElement.getBoundingClientRect().left,
@@ -114,7 +120,8 @@ export class FloorMapSelectComponent implements OnInit {
           top: this.floormapboundary.nativeElement.getBoundingClientRect().top,
           width: this.floormapboundary.nativeElement.getBoundingClientRect().width,
         },
-        seats: seats
+        seats: seats,
+        imageKey: this.imageAWSKey
       };
 
       var json = JSON.stringify(finalConfig);
