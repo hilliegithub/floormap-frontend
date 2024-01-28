@@ -1,23 +1,31 @@
 <div class="container" *ngIf="validUrlParam">
-    <div class="workspace">
+    <div>
         <h1>Select seats for building</h1>
-        <div class="ws1" #floormapboundary>
-            <img [src]="imgURL">
-            <!-- <img id="map" src=""> -->
-            <!--<app-seat></app-seat>-->
-            @for (seat of seatArray; track $index) {
+        <div class="workspace">
+            <div class="ws1" #floormapboundary>
+                <img [src]="imgURL">
+                <!-- <img id="map" src=""> -->
+                <!--<app-seat></app-seat>-->
+                @for (seat of seatArray; track $index) {
                 <app-seat></app-seat>
-            }
-        </div>
+                }
+                </div>
 
-    </div>
-    <div class="sidepanel">
-        <h1>Controls</h1>
-        <div class="controls">
-            <button (click)="addSeat()">Add Seat</button>
-            <button (click)="createMap()">Create Map</button>
         </div>
     </div>
+    <div>
+        <h1>Controls</h1>
+            <div class="sidepanel">
+                <div class="controls">
+                    <button (click)="addSeat()">Add Seat</button>
+                    <button *ngIf="!loading" (click)="createMap()">Create Map</button>
+                    <mat-spinner *ngIf="loading"></mat-spinner>
+                    <div *ngIf="errorOccurred.status" class="error-message">
+                        {{errorOccurred.message}}
+                    </div>
+                    </div>
+                    </div>
+                    </div>
 </div>
 <div class="container" *ngIf="!validUrlParam">
     Not a valid request.

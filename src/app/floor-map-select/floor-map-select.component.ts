@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SeatConfig } from '../seatconfig';
 import { Seat } from '../seat';
 import { SeatComponent } from '../seat/seat.component';
@@ -8,12 +8,13 @@ import { BackendserviceService } from '../services/backendservice.service';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { environment } from '../../environments/environment.development';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { NodeJsClient } from '@smithy/types';
 
 @Component({
   selector: 'app-floor-map-select',
   standalone: true,
-  imports: [SeatComponent, CommonModule],
+  imports: [SeatComponent, CommonModule, MatProgressSpinnerModule],
   templateUrl: './floor-map-select.component.html',
   styleUrl: './floor-map-select.component.css'
 })
@@ -29,12 +30,19 @@ export class FloorMapSelectComponent implements OnInit {
      heigthConfigured: 0
     }
 
+    errorOccurred: any = {
+      status: false,
+      message: ''
+    }
+
+    loading = false;
+
     validUrlParam = true;
     imageAWSKey = '';
     imgURL = '';
     s3Client = new S3Client({region: environment.awsRegion, credentials: {accessKeyId:environment.s3Credentials.accessKeyId,secretAccessKey:environment.s3Credentials.secretAccessKey}}) as NodeJsClient<S3Client>;
 
-    constructor(private route: ActivatedRoute){
+    constructor(private route: ActivatedRoute, private router: Router){
     }
 
     ngOnInit(): void {
@@ -57,15 +65,17 @@ export class FloorMapSelectComponent implements OnInit {
                 console.log(key);
                 var params = {Bucket: 'floor-mapping', Key: key};
                 var command = new GetObjectCommand(params);
-                //ar urlPresigned = await (getSignedUrl(this.s3Client, command, {expiresIn: 3600}));
-                //console.log(await urlPresigned)
-                //this.imgURL = urlPresigned;
+                var urlPresigned = await (getSignedUrl(this.s3Client, command, {expiresIn: 3600}));
+                console.log(await urlPresigned)
+                this.imgURL = urlPresigned;
                 this.imageAWSKey = key;
-                this.imgURL = "../../assets/floorplan.png"
+                // this.imgURL = "../../assets/floorplan.png"
               }
             },
             (err) => {
               console.error(err)
+              this.errorOccurred.status = true;
+              this.errorOccurred.message = 'Could not successfully load image from storage. Try again later.'
             }
           );
 
@@ -85,7 +95,13 @@ export class FloorMapSelectComponent implements OnInit {
       this.seatArray.push(new SeatComponent());
     }
 
+    toggleLoading(){
+      this.loading = !this.loading;
+    }
+
     createMap(){
+      this.loading = true;
+      this.errorOccurred.status = false;
       var list = [];
       var l = document.getElementsByTagName('app-seat');
       for(var ind = 0; ind < l.length; ind++){
@@ -125,15 +141,27 @@ export class FloorMapSelectComponent implements OnInit {
       };
 
       var json = JSON.stringify(finalConfig);
-      console.log(json);
+
       var responseObservable = this.backendService.createMap(json);
       responseObservable.subscribe(
         (res) => {
           console.log(res);
+          if (res.error.status == 'false'){
+            console.log('Navigate to success page')
+            this.router.navigate(['/success'])
+          }
+          else{
+            console.log("Show error!")
+            this.errorOccurred.status = true;
+            this.errorOccurred.message = 'Error occured on the server. Please try again later or contact the administrator';
+          }
         },
         (err) => {
           console.error(err);
+          this.errorOccurred.status = true;
+          this.errorOccurred.message = 'Could not successfully create mappings. Please try again later or contact the administrator';
         }
-      )
+        )
+        this.loading = false;
     }
 }

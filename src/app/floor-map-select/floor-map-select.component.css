@@ -6,7 +6,7 @@
     background-color: #ffffff;
     margin: 0;
     padding: 0;
-    height: 80vh;
+    height: 70vh;
     width: 90vh;
     border-radius: 20px;
 }
@@ -26,8 +26,7 @@
 }
 
 .sidepanel {
-    background-color: #ffffff;
-    height: 80vh;
+    height: 70vh;
     border-radius: 20px;
     margin-left: 20px;
 }
@@ -52,5 +51,13 @@ h1 {
 .controls {
     display: flex;
     flex-direction: column;
+    max-width: 300px;
     row-gap: 10px;
+}
+.error-message {
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    color: red;
 }
