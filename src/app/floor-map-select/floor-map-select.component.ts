@@ -40,7 +40,7 @@ export class FloorMapSelectComponent implements OnInit {
     validUrlParam = true;
     imageAWSKey = '';
     imgURL = '';
-    s3Client = new S3Client({region: environment.awsRegion, credentials: {accessKeyId:environment.s3Credentials.accessKeyId,secretAccessKey:environment.s3Credentials.secretAccessKey}}) as NodeJsClient<S3Client>;
+    s3Client = new S3Client({region: environment.AWS_REGION, credentials: {accessKeyId:environment.ACCESS_KEY_ID,secretAccessKey:environment.SECRET_ACCESS_KEY}}) as NodeJsClient<S3Client>;
 
     constructor(private route: ActivatedRoute, private router: Router){
     }

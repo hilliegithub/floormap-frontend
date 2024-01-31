@@ -1,0 +1,19 @@
+services:
+  maplayoutapp:
+    container_name: maplayoutappcontainer
+    build: .
+    image: maplayoutapp:v1
+    environment:
+      - AWS_REGION=${AWS_REGION}
+      - SECRET_ACCESS_KEY=${SECRET_ACCESS_KEY}
+      - ACCESS_KEY_ID=${ACCESS_KEY_ID}
+    ports:
+      - 80:80
+    expose:
+      - 80
+    networks:
+      - internalnet
+
+networks:
+  internalnet:
+    driver: bridge
