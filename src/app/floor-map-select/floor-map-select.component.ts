@@ -5,8 +5,8 @@ import { Seat } from '../seat';
 import { SeatComponent } from '../seat/seat.component';
 import { CommonModule } from '@angular/common';
 import { BackendserviceService } from '../services/backendservice.service';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+// import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+// import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { environment } from '../../environments/environment.development';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { NodeJsClient } from '@smithy/types';
@@ -40,7 +40,7 @@ export class FloorMapSelectComponent implements OnInit {
     validUrlParam = true;
     imageAWSKey = '';
     imgURL = '';
-    s3Client = new S3Client({region: environment.AWS_REGION, credentials: {accessKeyId:environment.ACCESS_KEY_ID,secretAccessKey:environment.SECRET_ACCESS_KEY}}) as NodeJsClient<S3Client>;
+    // s3Client = new S3Client({region: environment.AWS_REGION, credentials: {accessKeyId:environment.ACCESS_KEY_ID,secretAccessKey:environment.SECRET_ACCESS_KEY}}) as NodeJsClient<S3Client>;
 
     constructor(private route: ActivatedRoute, private router: Router){
     }
@@ -62,14 +62,14 @@ export class FloorMapSelectComponent implements OnInit {
               }
               else{
                 var key = 'floor-images/' + res.imageKey;
-                console.log(key);
-                var params = {Bucket: 'floor-mapping', Key: key};
-                var command = new GetObjectCommand(params);
-                var urlPresigned = await (getSignedUrl(this.s3Client, command, {expiresIn: 3600}));
-                console.log(await urlPresigned)
-                this.imgURL = urlPresigned;
+                // console.log(key);
+                // var params = {Bucket: 'floor-mapping', Key: key};
+                // var command = new GetObjectCommand(params);
+                //var urlPresigned = await (getSignedUrl(this.s3Client, command, {expiresIn: 3600}));
+                //console.log(await urlPresigned)
                 this.imageAWSKey = key;
-                // this.imgURL = "../../assets/floorplan.png"
+                this.imgURL = res.image_url;
+                //  this.imgURL = "../../assets/floorplan.png"
               }
             },
             (err) => {

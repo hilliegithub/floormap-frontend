@@ -14,16 +14,21 @@ export class BackendserviceService {
 
   sendCreateFloorMap(floormapBasic: FormData): Observable<any>{
     //console.log(floormapBasic);
-
-    return this.http.post(environment.GATEWAY_API + "/upload", floormapBasic)
+    const url = require('../../assets/env.json');
+    console.log(url.baseurl);
+    const endpoint = url.baseurl + "/upload";
+    return this.http.post(endpoint, floormapBasic)
   }
 
   getFloorMapImg(imagename: string): Observable<any>{
-    // const params = new HttpParams({fromString: imagename})
-    return this.http.request('GET',environment.GATEWAY_API + "/getimage" + '?img=' + imagename, {responseType:'json'});
+    const url = require('../../assets/env.json');
+    const endpoint = url.baseurl + "/getimage";
+    return this.http.request('GET',endpoint + '?img=' + imagename, {responseType:'json'});
   }
 
   createMap(jsonData: any): Observable<any>{
-    return this.http.request('POST', environment.GATEWAY_API + "/createmap", {body: jsonData, headers: {"Content-Type" : "application/json"}})
+    const url = require('../../assets/env.json');
+    const endpoint = url.baseurl + "/createmap";
+    return this.http.request('POST', endpoint, {body: jsonData, headers: {"Content-Type" : "application/json"}})
   }
 }
